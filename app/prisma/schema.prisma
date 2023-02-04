@@ -11,7 +11,7 @@ datasource db {
     relationMode = "prisma"
 }
 
-model Saves {
+model Save {
     id      String
     date    DateTime
     entries String   @db.MediumText

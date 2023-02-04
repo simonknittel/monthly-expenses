@@ -21,7 +21,7 @@ export default function Login() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex max-w-xl flex-col gap-4 rounded bg-slate-800 p-8  text-slate-50"
+      className="flex w-full max-w-md flex-col gap-4 rounded bg-slate-800 p-8  text-slate-50"
     >
       <div className="flex flex-col gap-1">
         <label htmlFor="id" className="text-slate-400">

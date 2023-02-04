@@ -1,13 +1,7 @@
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import { Entry } from "../types";
 import { api } from "../utils/api";
-
-interface Entry {
-  type: "revenue" | "expense";
-  category: string;
-  transactionPartner: string;
-  description: string;
-  value: number;
-}
 
 interface Props {
   id: string;
@@ -55,6 +49,8 @@ export default function Form({ id, latestEntries }: Props) {
       date: new Date(data.date),
       entries: JSON.stringify([...data.revenues, ...data.expenses]),
     });
+
+    toast.success("Saved new entry");
   };
 
   return (
@@ -127,7 +123,7 @@ export default function Form({ id, latestEntries }: Props) {
           onClick={() =>
             appendRevenue({
               type: "revenue",
-              category: "",
+              category: "test revenue category",
               transactionPartner: "",
               description: "",
               value: 0,
@@ -203,7 +199,7 @@ export default function Form({ id, latestEntries }: Props) {
           onClick={() =>
             appendExpense({
               type: "expense",
-              category: "",
+              category: "test expense category",
               transactionPartner: "",
               description: "",
               value: 0,
