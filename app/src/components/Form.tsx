@@ -1,4 +1,5 @@
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { api } from "../utils/api";
 
 interface Entry {
   type: "revenue" | "expense";
@@ -9,25 +10,24 @@ interface Entry {
 }
 
 interface Props {
-  data: {
-    entries: Entry[];
-    date: Date;
-  };
+  id: string;
+  latestEntries: Entry[];
 }
 
 interface FormValues {
+  date: string;
   revenues: Entry[];
   expenses: Entry[];
-  date: string;
 }
 
-export default function Form({ data }: Props) {
-  console.log(data.date, data.date.toISOString().substring(0, 16));
+export default function Form({ id, latestEntries }: Props) {
+  const mutation = api.saves.store.useMutation({});
+
   const { control, handleSubmit, register } = useForm<FormValues>({
     defaultValues: {
-      revenues: data.entries.filter(({ type }) => type === "revenue"),
-      expenses: data.entries.filter(({ type }) => type === "expense"),
-      date: data.date.toISOString().substring(0, 16),
+      revenues: latestEntries.filter(({ type }) => type === "revenue"),
+      expenses: latestEntries.filter(({ type }) => type === "expense"),
+      date: new Date().toISOString().substring(0, 16),
     },
   });
 
@@ -50,7 +50,11 @@ export default function Form({ data }: Props) {
   });
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log(data);
+    mutation.mutate({
+      id,
+      date: new Date(data.date),
+      entries: JSON.stringify([...data.revenues, ...data.expenses]),
+    });
   };
 
   return (

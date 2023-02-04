@@ -1,42 +1,21 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Form from "../components/Form";
-
-const data = {
-  entries: [
-    {
-      type: "expense",
-      category: "Wohnung",
-      transactionPartner: "Stephan Langner",
-      description: "Wohnung",
-      value: 595,
-    },
-    {
-      type: "expense",
-      category: "Wohnung",
-      transactionPartner: "Stephan Langner",
-      description: "Betriebskosten",
-      value: 85,
-    },
-    {
-      type: "revenue",
-      category: "Gehalt",
-      transactionPartner: "hmmh multimediahaus AG",
-      description: "Festanstellung",
-      value: 2821,
-    },
-    {
-      type: "revenue",
-      category: "Spotify Family",
-      transactionPartner: "Lennart Finger",
-      description: "",
-      value: 3,
-    },
-  ],
-  date: new Date(),
-};
+import Login from "../components/Login";
+import { useId } from "../contexts/Id";
+import { api } from "../utils/api";
 
 const Home: NextPage = () => {
+  const { id } = useId();
+  const query = api.saves.get.useQuery(
+    {
+      id,
+    },
+    {
+      enabled: Boolean(id),
+    }
+  );
+
   return (
     <>
       <Head>
@@ -49,7 +28,21 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="min-h-screen bg-slate-700 p-4">
-        <Form data={data} />
+        {!id && <Login />}
+
+        {id && query.data && (
+          <Form
+            id={id}
+            latestEntries={
+              JSON.parse(
+                query.data.sort(
+                  (a, b) =>
+                    new Date(b.date).getTime() - new Date(a.date).getTime()
+                )[0]?.entries || "[]"
+              ) || []
+            }
+          />
+        )}
       </main>
     </>
   );
