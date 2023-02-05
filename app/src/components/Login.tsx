@@ -39,6 +39,7 @@ export default function Login() {
             id="username"
             className="rounded bg-slate-700 p-2"
             type="text"
+            autoComplete="username"
             {...register("username", { required: true })}
           />
         </div>
@@ -58,6 +59,7 @@ export default function Login() {
             id="encryptionKey"
             className="rounded bg-slate-700 p-2"
             type="text"
+            autoComplete="current-password"
             {...register("encryptionKey", { required: true })}
           />
         </div>
