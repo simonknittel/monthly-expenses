@@ -1,15 +1,10 @@
-import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { createContext, useContext, useMemo } from "react";
 
 interface IdInterface {
   id: string | null;
-  setId: (value: string) => void;
+  login: (value: string, rememberMe?: boolean) => void;
+  logout: () => void;
 }
 
 const Id = createContext<IdInterface | undefined>(undefined);
@@ -26,15 +21,21 @@ export const IdProvider = ({ children }: Props) => {
     _setId(value || null);
   }, []);
 
-  const setId = (value: string) => {
+  const login: IdInterface["login"] = (value, rememberMe = false) => {
     _setId(value);
-    localStorage.setItem("id", value);
+    if (rememberMe) localStorage.setItem("id", value);
+  };
+
+  const logout: IdInterface["logout"] = () => {
+    _setId(null);
+    localStorage.removeItem("id");
   };
 
   const value = useMemo(
     () => ({
       id,
-      setId,
+      login,
+      logout,
     }),
     [id]
   );
