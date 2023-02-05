@@ -58,7 +58,7 @@ export default function Login() {
           <input
             id="encryptionKey"
             className="rounded bg-slate-700 p-2"
-            type="text"
+            type="password"
             autoComplete="current-password"
             {...register("encryptionKey", { required: true })}
           />
