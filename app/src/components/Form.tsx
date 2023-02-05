@@ -254,33 +254,35 @@ export default function Form({
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="date" className="text-slate-400">
-          Datum
-        </label>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="date" className="text-slate-400">
+            Datum
+          </label>
 
-        <input
-          id="date"
-          className="rounded bg-slate-700 p-2"
-          type="datetime-local"
-          disabled={currentDateAndTime}
-          {...register("date", { required: true })}
-        />
-      </div>
-
-      <div className="flex">
-        <div className="flex w-5 items-center">
           <input
-            id="rememberMe"
+            id="date"
             className="rounded bg-slate-700 p-2"
-            type="checkbox"
-            checked={currentDateAndTime}
-            onChange={() => setCurrentDateAndTime(!currentDateAndTime)}
+            type="datetime-local"
+            disabled={currentDateAndTime}
+            {...register("date", { required: true })}
           />
         </div>
 
-        <label htmlFor="rememberMe" className="text-slate-400">
-          Current date and time
-        </label>
+        <div className="flex">
+          <div className="flex w-5 items-center">
+            <input
+              id="rememberMe"
+              className="rounded bg-slate-700 p-2"
+              type="checkbox"
+              checked={currentDateAndTime}
+              onChange={() => setCurrentDateAndTime(!currentDateAndTime)}
+            />
+          </div>
+
+          <label htmlFor="rememberMe" className="text-slate-400">
+            Current date and time
+          </label>
+        </div>
       </div>
 
       <div className="flex flex-row-reverse gap-2">
