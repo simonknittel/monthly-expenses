@@ -1,7 +1,7 @@
-import { useId } from "../contexts/Id";
+import { useLogin } from "../contexts/Login";
 
 export default function Logout() {
-  const { logout } = useId();
+  const { logout } = useLogin();
 
   return (
     <button

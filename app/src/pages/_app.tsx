@@ -3,15 +3,15 @@ import { type AppType } from "next/app";
 import { api } from "../utils/api";
 
 import "../styles/globals.css";
-import { IdProvider } from "../contexts/Id";
+import { LoginProvider } from "../contexts/Login";
 import { Toaster } from "react-hot-toast";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <IdProvider>
+    <LoginProvider>
       <Component {...pageProps} />
       <Toaster />
-    </IdProvider>
+    </LoginProvider>
   );
 };
 

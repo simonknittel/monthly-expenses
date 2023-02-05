@@ -12,9 +12,9 @@ datasource db {
 }
 
 model Save {
-    id      String
-    date    DateTime
-    entries String   @db.MediumText
+    username String
+    date     DateTime
+    entries  String   @db.MediumText
 
-    @@id([id, date])
+    @@id([username, date])
 }

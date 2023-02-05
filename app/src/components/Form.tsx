@@ -1,10 +1,13 @@
+import { useEffect } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Entry } from "../types";
 import { api } from "../utils/api";
+import { encrypt } from "../utils/encryption";
 
 interface Props {
-  id: string;
+  username: string;
+  encryptionKey: string;
   latestEntries: Entry[];
 }
 
@@ -14,14 +17,22 @@ interface FormValues {
   expenses: Entry[];
 }
 
-export default function Form({ id, latestEntries }: Props) {
+export default function Form({
+  username,
+  encryptionKey,
+  latestEntries,
+}: Props) {
+  const utils = api.useContext();
   const mutation = api.saves.store.useMutation({});
 
-  const { control, handleSubmit, register } = useForm<FormValues>({
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+  const { control, handleSubmit, register, setValue } = useForm<FormValues>({
     defaultValues: {
       revenues: latestEntries.filter(({ type }) => type === "revenue"),
       expenses: latestEntries.filter(({ type }) => type === "expense"),
-      date: new Date().toISOString().substring(0, 16),
+      date: now.toISOString().substring(0, 16),
     },
   });
 
@@ -43,12 +54,31 @@ export default function Form({ id, latestEntries }: Props) {
     name: "expenses",
   });
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    mutation.mutate({
-      id,
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      setValue("date", now.toISOString().substring(0, 16));
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    const encryptedDataString = await encrypt(
+      [...data.revenues, ...data.expenses],
+      encryptionKey
+    );
+
+    await mutation.mutateAsync({
+      username,
       date: new Date(data.date),
-      entries: JSON.stringify([...data.revenues, ...data.expenses]),
+      entries: encryptedDataString,
     });
+
+    utils.saves.get.invalidate();
 
     toast.success("Saved new entry");
   };
@@ -56,7 +86,7 @@ export default function Form({ id, latestEntries }: Props) {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex max-w-xl flex-col gap-4 rounded bg-slate-800 p-8  text-slate-50"
+      className="flex w-[480px] shrink-0 flex-col gap-4 rounded bg-slate-800  p-8 text-slate-50"
     >
       <div className="flex flex-col gap-1">
         <p className="text-green-300">Revenues</p>
@@ -123,7 +153,7 @@ export default function Form({ id, latestEntries }: Props) {
           onClick={() =>
             appendRevenue({
               type: "revenue",
-              category: "test revenue category",
+              category: "",
               transactionPartner: "",
               description: "",
               value: 0,
@@ -199,7 +229,7 @@ export default function Form({ id, latestEntries }: Props) {
           onClick={() =>
             appendExpense({
               type: "expense",
-              category: "test expense category",
+              category: "",
               transactionPartner: "",
               description: "",
               value: 0,
@@ -214,6 +244,7 @@ export default function Form({ id, latestEntries }: Props) {
         <label htmlFor="date" className="text-slate-400">
           Datum
         </label>
+
         <input
           id="date"
           className="rounded bg-slate-700 p-2"
@@ -229,6 +260,7 @@ export default function Form({ id, latestEntries }: Props) {
         >
           Save
         </button>
+
         <button
           type="reset"
           className="basis-32 rounded p-2 text-xs uppercase hover:bg-slate-700"

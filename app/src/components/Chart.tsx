@@ -1,5 +1,5 @@
 // https://echarts.apache.org/examples/en/editor.html?c=area-stack-gradient&theme=dark
-// https://echarts.apache.org/examples/en/editor.html?c=sankey-simple&theme=dark
+// https://echarts.apache.org/en/option.html#series-line
 
 import { Save } from "@prisma/client";
 import ECharts, { type Props as EChartsProps } from "./ECharts";
@@ -7,117 +7,101 @@ import { graphic } from "echarts";
 import { Entry } from "../types";
 
 interface Props {
-  saves: Save[];
+  saves: { date: Date; entries: Entry[] }[];
 }
 
 export default function Chart({ saves }: Props) {
-  const revenueCategories = new Set<Entry["category"]>();
-  const expenseCategories = new Set<Entry["category"]>();
+  const revenueValues: number[] = [];
+  const expenseValues: number[] = [];
   const dates = new Set<Save["date"]>();
 
-  saves.forEach((save) => {
-    const entries: Entry[] = JSON.parse(save.entries);
+  saves
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .forEach((save) => {
+      let revenue = 0;
+      let expense = 0;
 
-    entries.forEach((entry) => {
-      if (entry.type === "revenue") revenueCategories.add(entry.category);
-      if (entry.type === "expense") expenseCategories.add(entry.category);
+      save.entries.forEach((entry) => {
+        if (entry.type === "revenue") revenue += entry.value;
+        if (entry.type === "expense") expense += entry.value;
+      });
+
+      revenueValues.push(revenue);
+      expenseValues.push(expense);
+
+      dates.add(save.date);
     });
 
-    dates.add(save.date);
+  const legendData = ["Revenue", "Expense"];
+
+  const xAxisData = Array.from(dates).map((date) => {
+    const timeFormat = new Intl.DateTimeFormat("de-DE", {
+      dateStyle: "short",
+      timeStyle: "short",
+    });
+
+    return timeFormat.format(date);
   });
 
-  const legendData = [
-    ...Array.from(revenueCategories),
-    ...Array.from(expenseCategories),
-  ];
-
-  const xAxisData = Array.from(dates).map((date) => date.toISOString());
-
   const series = [
-    ...Array.from(revenueCategories).map((category) => {
-      const data: number[] = [];
-
-      saves.forEach((save) => {
-        const entries = JSON.parse(save.entries);
-        data.push(
-          entries
-            .filter((entry) => entry.category === category)
-            .reduce((total, entry) => (total += parseInt(entry.value)), 0)
-        );
-      });
-
-      return {
-        name: category,
-        type: "line",
-        stack: "Total",
-        smooth: true,
-        lineStyle: {
-          width: 0,
-        },
-        showSymbol: false,
-        areaStyle: {
-          opacity: 0.8,
-          color: new graphic.LinearGradient(0, 0, 0, 1, [
-            {
-              offset: 0,
-              color: "rgb(128, 255, 165)",
-            },
-            {
-              offset: 1,
-              color: "rgb(1, 191, 236)",
-            },
-          ]),
-        },
-        emphasis: {
-          focus: "series",
-        },
-        data,
-      };
-    }),
-    ...Array.from(expenseCategories).map((category) => {
-      const data: number[] = [];
-
-      saves.forEach((save) => {
-        const entries = JSON.parse(save.entries);
-        data.push(
-          entries
-            .filter((entry) => entry.category === category)
-            .reduce((total, entry) => (total += parseInt(entry.value)), 0)
-        );
-      });
-
-      return {
-        name: category,
-        type: "line",
-        stack: "Total",
-        smooth: true,
-        lineStyle: {
-          width: 0,
-        },
-        showSymbol: false,
-        areaStyle: {
-          opacity: 0.8,
-          color: new graphic.LinearGradient(0, 0, 0, 1, [
-            {
-              offset: 0,
-              color: "rgb(128, 255, 165)",
-            },
-            {
-              offset: 1,
-              color: "rgb(1, 191, 236)",
-            },
-          ]),
-        },
-        emphasis: {
-          focus: "series",
-        },
-        data,
-      };
-    }),
+    {
+      name: "Revenue",
+      type: "line",
+      stack: "RevenueTotal",
+      smooth: true,
+      lineStyle: {
+        width: 0,
+      },
+      showSymbol: false,
+      areaStyle: {
+        opacity: 0.8,
+        color: new graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: "rgb(128, 255, 165)",
+          },
+          {
+            offset: 1,
+            color: "rgb(1, 191, 236)",
+          },
+        ]),
+      },
+      emphasis: {
+        disabled: true,
+      },
+      data: revenueValues,
+    },
+    {
+      name: "Expense",
+      type: "line",
+      stack: "ExpenseTotal",
+      smooth: true,
+      lineStyle: {
+        width: 0,
+      },
+      showSymbol: false,
+      areaStyle: {
+        opacity: 0.8,
+        color: new graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: "rgb(255, 0, 135)",
+          },
+          {
+            offset: 1,
+            color: "rgb(135, 0, 157)",
+          },
+        ]),
+      },
+      emphasis: {
+        disabled: true,
+      },
+      data: expenseValues,
+    },
   ];
 
   const option: EChartsProps["option"] = {
-    color: ["#80FFA5", "#00DDFF", "#37A2FF", "#FF0087", "#FFBF00"],
+    color: ["#80FFA5", "#FF0087"],
     tooltip: {
       trigger: "axis",
       axisPointer: {
@@ -131,8 +115,8 @@ export default function Chart({ saves }: Props) {
       data: legendData,
     },
     grid: {
-      left: 0,
-      right: 0,
+      left: "5px",
+      right: "45px",
       bottom: 0,
       containLabel: true,
     },
@@ -152,7 +136,7 @@ export default function Chart({ saves }: Props) {
   };
 
   return (
-    <section className="grow rounded bg-slate-800 p-8 text-slate-50">
+    <section className="min-w-[480px] grow rounded bg-slate-800 p-8 text-slate-50">
       <ECharts option={option} />
     </section>
   );

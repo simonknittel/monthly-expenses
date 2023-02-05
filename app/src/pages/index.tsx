@@ -4,23 +4,16 @@ import Chart from "../components/Chart";
 import Form from "../components/Form";
 import Login from "../components/Login";
 import Logout from "../components/Logout";
-import { useId } from "../contexts/Id";
-import { api } from "../utils/api";
+import { useLogin } from "../contexts/Login";
 
 const Home: NextPage = () => {
-  const { id } = useId();
-  const query = api.saves.get.useQuery(
-    {
-      id,
-    },
-    {
-      enabled: Boolean(id),
-    }
-  );
+  const { username, encryptionKey, saves } = useLogin();
 
   return (
     <>
       <Head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Monthly Expenses</title>
         <meta
           name="description"
@@ -30,7 +23,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="min-h-screen bg-slate-700 p-4">
-        {!id && (
+        {!username && (
           <div className="flex min-h-screen flex-col items-center justify-center gap-4">
             <h1 className="text-2xl font-bold text-slate-50">
               Monthly Expenses
@@ -39,24 +32,20 @@ const Home: NextPage = () => {
           </div>
         )}
 
-        {id && query.data && (
+        {username && encryptionKey && saves && (
           <div className="flex flex-col items-start gap-4">
             <Logout />
 
-            <div className="flex w-full gap-4">
-              <Form
-                id={id}
-                latestEntries={
-                  JSON.parse(
-                    query.data.sort(
-                      (a, b) =>
-                        new Date(b.date).getTime() - new Date(a.date).getTime()
-                    )[0]?.entries || "[]"
-                  ) || []
-                }
-              />
+            <div className="w-full overflow-x-scroll">
+              <div className="flex w-full gap-4">
+                <Form
+                  username={username}
+                  encryptionKey={encryptionKey}
+                  latestEntries={saves[0]?.entries || []}
+                />
 
-              <Chart saves={query.data} />
+                <Chart saves={saves} />
+              </div>
             </div>
 
             <div className="flex w-full justify-center p-4 text-slate-600">
