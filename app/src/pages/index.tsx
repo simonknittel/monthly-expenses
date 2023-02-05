@@ -48,7 +48,7 @@ const Home: NextPage = () => {
                 {!saves && (
                   <div className="flex w-[480px] shrink-0 flex-col gap-4 rounded bg-slate-800 p-8">
                     <p className="text-slate-400">
-                      Loading and decrypting your ...
+                      Loading and decrypting your data ...
                     </p>
                   </div>
                 )}
@@ -68,7 +68,7 @@ const Home: NextPage = () => {
                 {!saves && (
                   <section className="min-w-[480px] grow rounded bg-slate-800 p-8">
                     <p className="text-slate-400">
-                      Loading and decrypting your ...
+                      Loading and decrypting your data ...
                     </p>
                   </section>
                 )}
