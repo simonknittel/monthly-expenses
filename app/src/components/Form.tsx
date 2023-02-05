@@ -97,7 +97,7 @@ export default function Form({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex w-[480px] shrink-0 flex-col gap-4 rounded bg-slate-800  p-8 text-slate-50"
+      className="flex w-[480px] shrink-0 flex-col gap-4 rounded bg-slate-800 p-8 text-slate-50"
     >
       <div className="flex flex-col gap-1">
         <p className="text-green-300">Revenues</p>
