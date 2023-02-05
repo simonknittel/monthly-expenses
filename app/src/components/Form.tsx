@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import type { Entry } from "../types";
@@ -24,6 +24,9 @@ export default function Form({
 }: Props) {
   const utils = api.useContext();
   const mutation = api.saves.store.useMutation({});
+
+  const interval = useRef<ReturnType<typeof setInterval>>(null);
+  const [currentDateAndTime, setCurrentDateAndTime] = useState(true);
 
   const now = new Date();
   now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -55,16 +58,24 @@ export default function Form({
   });
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    if (interval.current) clearInterval(interval.current);
+
+    if (!currentDateAndTime) return;
+
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    setValue("date", now.toISOString().substring(0, 16));
+
+    interval.current = setInterval(() => {
       const now = new Date();
       now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
       setValue("date", now.toISOString().substring(0, 16));
     }, 1000);
 
     return () => {
-      clearInterval(interval);
+      if (interval.current) clearInterval(interval.current);
     };
-  }, []);
+  }, [currentDateAndTime]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const encryptedDataString = await encrypt(
@@ -251,8 +262,25 @@ export default function Form({
           id="date"
           className="rounded bg-slate-700 p-2"
           type="datetime-local"
+          disabled={currentDateAndTime}
           {...register("date", { required: true })}
         />
+      </div>
+
+      <div className="flex">
+        <div className="flex w-5 items-center">
+          <input
+            id="rememberMe"
+            className="rounded bg-slate-700 p-2"
+            type="checkbox"
+            checked={currentDateAndTime}
+            onChange={() => setCurrentDateAndTime(!currentDateAndTime)}
+          />
+        </div>
+
+        <label htmlFor="rememberMe" className="text-slate-400">
+          Current date and time
+        </label>
       </div>
 
       <div className="flex flex-row-reverse gap-2">
