@@ -142,6 +142,7 @@ export default function Form({
               className="basis-10 rounded border border-slate-700 p-2 text-xs uppercase hover:bg-slate-700"
               type="button"
               onClick={() => removeRevenue(index)}
+              title="Remove entry"
             >
               x
             </button>
@@ -160,7 +161,7 @@ export default function Form({
             })
           }
         >
-          Add new +
+          Add new entry +
         </button>
       </div>
 
@@ -218,6 +219,7 @@ export default function Form({
               className="basis-10 rounded border border-slate-700 p-2 text-xs uppercase hover:bg-slate-700"
               type="button"
               onClick={() => removeExpense(index)}
+              title="Remove entry"
             >
               x
             </button>
@@ -236,7 +238,7 @@ export default function Form({
             })
           }
         >
-          Add new +
+          Add new entry +
         </button>
       </div>
 

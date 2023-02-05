@@ -17,22 +17,29 @@ const Home: NextPage = () => {
         <title>Monthly Expenses</title>
         <meta
           name="description"
-          content="App to visualize and track your monthly expenses"
+          content="Track and visualize monthly expenses"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className="min-h-screen bg-slate-700 p-4">
         {!username && (
-          <div className="flex min-h-screen flex-col items-center justify-center gap-4">
-            <h1 className="text-2xl font-bold text-slate-50">
-              Monthly Expenses
-            </h1>
+          <div className="flex flex-col items-center justify-center gap-4">
+            <div className="flex flex-col items-center justify-center">
+              <h1 className="text-2xl font-bold text-slate-50">
+                Monthly Expenses
+              </h1>
+
+              <p className="text-slate-400">
+                Track and visualize monthly expenses
+              </p>
+            </div>
+
             <Login />
           </div>
         )}
 
-        {username && encryptionKey && saves && (
+        {username && encryptionKey && (
           <div className="flex flex-col items-start gap-4">
             <Logout />
 
@@ -41,18 +48,41 @@ const Home: NextPage = () => {
                 <Form
                   username={username}
                   encryptionKey={encryptionKey}
-                  latestEntries={saves[0]?.entries || []}
+                  latestEntries={saves?.[0]?.entries || []}
                 />
 
-                <Chart saves={saves} />
-              </div>
-            </div>
+                {!saves && (
+                  <section className="min-w-[480px] grow rounded bg-slate-800 p-8">
+                    <p className="text-slate-400">Loading ...</p>
+                  </section>
+                )}
 
-            <div className="flex w-full justify-center p-4 text-slate-600">
-              <p>Monthly Expenses</p>
+                {saves && saves.length <= 1 && (
+                  <section className="min-w-[480px] grow rounded bg-slate-800 p-8">
+                    <p className="text-slate-400">
+                      You need at least two data points for the visualization.
+                    </p>
+                  </section>
+                )}
+
+                {saves && saves.length > 1 && <Chart saves={saves} />}
+              </div>
             </div>
           </div>
         )}
+
+        <div className="flex w-full justify-center gap-2 p-4 text-slate-500">
+          <p>Monthly Expenses</p>
+
+          <span>&bull;</span>
+
+          <a
+            href="https://github.com/simonknittel/monthly-expenses"
+            className="text-slate-400 underline underline-offset-4 hover:text-slate-300"
+          >
+            GitHub
+          </a>
+        </div>
       </main>
     </>
   );

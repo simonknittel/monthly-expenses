@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useLogin } from "../contexts/Login";
 
 interface FormValues {
@@ -14,7 +15,7 @@ export default function Login() {
 
   useEffect(() => {
     setFocus("username");
-  }, []);
+  }, [setFocus]);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     login(data.username, data.encryptionKey, data.rememberMe);
@@ -25,8 +26,6 @@ export default function Login() {
       onSubmit={handleSubmit(onSubmit)}
       className="flex w-full max-w-md flex-col gap-4 rounded bg-slate-800 p-8  text-slate-50"
     >
-      <h2>Login</h2>
-
       <div className="flex flex-col gap-1">
         <div className="flex flex-col gap-1">
           <label htmlFor="username" className="text-slate-400">
@@ -50,8 +49,9 @@ export default function Login() {
           <label htmlFor="encryptionKey" className="text-slate-400">
             Encryption key
             <p className="text-sm text-slate-500">
-              Will be used to encrypt and decrypt the data. The key is
-              case-sensitive.
+              All data except for the username and dates will be encrypted with
+              your encryption key in your browser before being sent to the
+              server and stored in the database.
             </p>
           </label>
           <input
@@ -80,7 +80,8 @@ export default function Login() {
         </div>
 
         <p className="ml-5 text-sm text-slate-500">
-          Stores the username and key in your browser&apos;s LocalStorage.
+          Stores the username and encryption key in your browser&apos;s
+          LocalStorage.
         </p>
       </div>
 
