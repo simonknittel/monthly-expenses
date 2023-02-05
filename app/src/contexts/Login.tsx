@@ -1,6 +1,6 @@
-import { ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { createContext, useContext, useMemo } from "react";
-import { Entry } from "../types";
+import type { Entry } from "../types";
 import { api } from "../utils/api";
 import { decrypt } from "../utils/encryption";
 

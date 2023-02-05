@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { type SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { Entry } from "../types";
+import type { Entry } from "../types";
 import { api } from "../utils/api";
 import { encrypt } from "../utils/encryption";
 

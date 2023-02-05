@@ -5,6 +5,7 @@
 		"deque-systems.vscode-axe-linter",
 		"mikestead.dotenv",
 		"esbenp.prettier-vscode",
-		"bradlc.vscode-tailwindcss"
+		"bradlc.vscode-tailwindcss",
+		"dbaeumer.vscode-eslint"
 	]
 }

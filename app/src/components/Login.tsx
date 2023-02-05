@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useLogin } from "../contexts/Login";
 
@@ -80,7 +80,7 @@ export default function Login() {
         </div>
 
         <p className="ml-5 text-sm text-slate-500">
-          Stores the username and key in your browser's LocalStorage.
+          Stores the username and key in your browser&apos;s LocalStorage.
         </p>
       </div>
 

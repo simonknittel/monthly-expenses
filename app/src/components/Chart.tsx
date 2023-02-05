@@ -1,10 +1,10 @@
 // https://echarts.apache.org/examples/en/editor.html?c=area-stack-gradient&theme=dark
 // https://echarts.apache.org/en/option.html#series-line
 
-import { Save } from "@prisma/client";
+import type { Save } from "@prisma/client";
 import ECharts, { type Props as EChartsProps } from "./ECharts";
 import { graphic } from "echarts";
-import { Entry } from "../types";
+import type { Entry } from "../types";
 
 interface Props {
   saves: { date: Date; entries: Entry[] }[];

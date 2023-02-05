@@ -32,10 +32,10 @@ const PBKDF2 = async (
   );
 };
 
-const toBase64 = (buffer) =>
+const toBase64 = (buffer: any[]) =>
   btoa(String.fromCharCode(...new Uint8Array(buffer)));
 
-const fromBase64 = (buffer) =>
+const fromBase64 = (buffer: string) =>
   Uint8Array.from(atob(buffer), (c) => c.charCodeAt(0));
 
 const salt_len = 16;
