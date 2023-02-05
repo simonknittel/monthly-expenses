@@ -16,7 +16,7 @@ export default function Chart({ saves }: Props) {
   const dates = new Set<Save["date"]>();
 
   saves
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .sort((a, b) => a.date.getTime() - b.date.getTime())
     .forEach((save) => {
       let revenue = 0;
       let expense = 0;

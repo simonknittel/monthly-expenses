@@ -55,7 +55,11 @@ const Home: NextPage = () => {
                   <Form
                     username={username}
                     encryptionKey={encryptionKey}
-                    latestEntries={saves[0]?.entries || []}
+                    latestEntries={
+                      saves.sort(
+                        (a, b) => b.date.getTime() - a.date.getTime()
+                      )[0]?.entries || []
+                    }
                   />
                 )}
 
