@@ -22,10 +22,10 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="min-h-screen bg-slate-700 p-4">
+      <div className="min-h-screen bg-slate-700 p-4">
         {!username && (
           <div className="flex flex-col items-center justify-center gap-4">
-            <div className="flex flex-col items-center justify-center">
+            <header className="flex flex-col items-center justify-center">
               <h1 className="text-2xl font-bold text-slate-50">
                 Monthly Expenses
               </h1>
@@ -33,14 +33,14 @@ const Home: NextPage = () => {
               <p className="text-slate-400">
                 Track and visualize monthly expenses
               </p>
-            </div>
+            </header>
 
             <Login />
           </div>
         )}
 
         {username && encryptionKey && (
-          <div className="flex flex-col items-start gap-4">
+          <main className="flex flex-col items-start gap-4">
             <Logout />
 
             <div className="w-full overflow-x-scroll">
@@ -68,10 +68,10 @@ const Home: NextPage = () => {
                 {saves && saves.length > 1 && <Chart saves={saves} />}
               </div>
             </div>
-          </div>
+          </main>
         )}
 
-        <div className="flex w-full justify-center gap-2 p-4 text-slate-500">
+        <footer className="flex w-full justify-center gap-2 p-4 text-slate-500">
           <p>Monthly Expenses</p>
 
           <span>&bull;</span>
@@ -82,8 +82,8 @@ const Home: NextPage = () => {
           >
             GitHub
           </a>
-        </div>
-      </main>
+        </footer>
+      </div>
     </>
   );
 };
