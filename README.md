@@ -35,5 +35,6 @@ The project was setup with the so called [T3 stack](https://create.t3.gg/)
 ### Running the app on you machine
 
 1. `pscale connect monthly-expenses main`
-2. `npm run dev`
-3. Access app at <http://localhost:3000>
+2. `npx prisma db push`
+3. `npm run dev`
+4. Access app at <http://localhost:3000>
