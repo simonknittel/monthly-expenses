@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import type { Entry } from "../types";
 import { api } from "../utils/api";
 import { encrypt } from "../utils/encryption";
+import Button from "./Button";
 
 interface Props {
   username: string;
@@ -286,19 +287,10 @@ export default function Form({
       </div>
 
       <div className="flex flex-row-reverse gap-2">
-        <button
-          type="submit"
-          className="basis-32 rounded bg-slate-900 p-4 uppercase hover:bg-slate-700"
-        >
-          Save
-        </button>
-
-        <button
-          type="reset"
-          className="basis-32 rounded p-2 text-xs uppercase hover:bg-slate-700"
-        >
+        <Button type="submit">Save</Button>
+        <Button type="reset" variant="secondary">
           Reset
-        </button>
+        </Button>
       </div>
     </form>
   );

@@ -1,14 +1,12 @@
 import { useLogin } from "../contexts/Login";
+import Button from "./Button";
 
 export default function Logout() {
   const { logout } = useLogin();
 
   return (
-    <button
-      className="rounded p-4 text-xs uppercase text-slate-50 hover:bg-slate-600"
-      onClick={logout}
-    >
+    <Button onClick={logout} variant="secondary">
       &lt; Logout
-    </button>
+    </Button>
   );
 }

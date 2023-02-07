@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { useLogin } from "../contexts/Login";
+import Button from "./Button";
 
 interface FormValues {
   username: string;
@@ -88,12 +89,7 @@ export default function Login() {
       </div>
 
       <div className="flex flex-row-reverse gap-2">
-        <button
-          type="submit"
-          className="basis-32 rounded bg-slate-900 p-4 uppercase hover:bg-slate-700"
-        >
-          Login
-        </button>
+        <Button type="submit">Login</Button>
       </div>
     </form>
   );
