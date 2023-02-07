@@ -3,9 +3,9 @@
 		"codezombiech.gitignore",
 		"prisma.prisma",
 		"deque-systems.vscode-axe-linter",
-		"mikestead.dotenv",
 		"esbenp.prettier-vscode",
 		"bradlc.vscode-tailwindcss",
-		"dbaeumer.vscode-eslint"
+		"dbaeumer.vscode-eslint",
+		"dotenv.dotenv-vscode"
 	]
 }
