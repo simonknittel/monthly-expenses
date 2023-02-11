@@ -38,3 +38,7 @@ The project was setup with the so called [T3 stack](https://create.t3.gg/)
 2. `npx prisma db push`
 3. `npm run dev`
 4. Access app at <http://localhost:3000>
+
+## License
+
+See [LICENSE](./LICENSE)
