@@ -2,6 +2,7 @@
 	"cSpell.words": [
 		"clsx",
 		"echarts",
+		"prisma",
 		"pscale",
 		"trpc"
 	],
@@ -9,5 +10,6 @@
     {
       "pattern": "./app/"
     }
-  ]
+	],
+	"dotenv.enableAutocloaking": false
 }

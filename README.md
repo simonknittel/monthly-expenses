@@ -17,6 +17,7 @@ The project was setup with the so called [T3 stack](https://create.t3.gg/)
 - [Prisma](https://www.prisma.io/)
 - [PlanetScale](https://planetscale.com/)
 - [Vercel](https://vercel.com/)
+- [NextAuth.js](https://next-auth.js.org/)
 
 ## Usage
 
@@ -30,7 +31,7 @@ The project was setup with the so called [T3 stack](https://create.t3.gg/)
 1. Install required Node.js version: `nvm install`
 2. Install npm packages: `cd app & npm ci`
 3. Create database on PlanetScale: `pscale database create monthly-expenses`
-4. Duplicate `.env.example` to `.env`
+4. Duplicate `.env.example` to `.env` and adjust it to your needs
 
 ### Running the app on you machine
 

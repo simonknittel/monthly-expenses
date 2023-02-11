@@ -1,11 +1,10 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const savesRouter = createTRPCRouter({
-  store: publicProcedure
+  store: protectedProcedure
     .input(
       z.object({
-        username: z.string(),
         date: z.date(),
         entries: z.string(),
       })
@@ -13,19 +12,21 @@ export const savesRouter = createTRPCRouter({
     .mutation(({ input, ctx }) => {
       return ctx.prisma.save.create({
         data: {
-          username: input.username,
           date: input.date,
           entries: input.entries,
+          user: {
+            connect: {
+              id: ctx.session.user.id,
+            },
+          },
         },
       });
     }),
-  get: publicProcedure
-    .input(z.object({ username: z.string() }))
-    .query(({ input, ctx }) => {
-      return ctx.prisma.save.findMany({
-        where: {
-          username: input.username,
-        },
-      });
-    }),
+  get: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.save.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+    });
+  }),
 });

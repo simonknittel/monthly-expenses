@@ -1,11 +1,17 @@
-import { useLogin } from "../contexts/Login";
+import { signOut } from "next-auth/react";
+import { useEncryptionKey } from "../contexts/EncryptionKey";
 import Button from "./Button";
 
 export default function Logout() {
-  const { logout } = useLogin();
+  const { unset } = useEncryptionKey();
+
+  const clickHandler = () => {
+    unset();
+    signOut();
+  };
 
   return (
-    <Button onClick={logout} variant="secondary">
+    <Button variant="secondary" onClick={clickHandler}>
       &lt; Logout
     </Button>
   );

@@ -7,7 +7,6 @@ import { encrypt } from "../utils/encryption";
 import Button from "./Button";
 
 interface Props {
-  username: string;
   encryptionKey: string;
   latestEntries: Entry[];
 }
@@ -18,11 +17,7 @@ interface FormValues {
   expenses: Entry[];
 }
 
-export default function Form({
-  username,
-  encryptionKey,
-  latestEntries,
-}: Props) {
+export default function Form({ encryptionKey, latestEntries }: Props) {
   const utils = api.useContext();
   const mutation = api.saves.store.useMutation({});
 
@@ -85,7 +80,6 @@ export default function Form({
     );
 
     await mutation.mutateAsync({
-      username,
       date: new Date(data.date),
       entries: encryptedDataString,
     });
