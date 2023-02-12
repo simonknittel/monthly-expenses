@@ -58,7 +58,7 @@ export async function encrypt(data: any, encryptionKey: string) {
   return toBase64([...salt, ...iv, ...new Uint8Array(encrypted)]);
 }
 
-export async function decrypt(
+export async function decrypt<T>(
   encryptedDataString: string,
   encryptionKey: string
 ) {
@@ -76,5 +76,5 @@ export async function decrypt(
 
   const decoder = new TextDecoder();
   const plain_text = decoder.decode(decrypted);
-  return JSON.parse(plain_text);
+  return JSON.parse(plain_text) as T;
 }

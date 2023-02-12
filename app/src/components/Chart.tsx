@@ -32,7 +32,7 @@ export default function Chart({ saves }: Props) {
       dates.add(save.date);
     });
 
-  const legendData = ["Revenue", "Expense"];
+  const legendData = ["Revenues", "Expenses"];
 
   const xAxisData = Array.from(dates).map((date) => {
     const timeFormat = new Intl.DateTimeFormat("de-DE", {
@@ -45,7 +45,7 @@ export default function Chart({ saves }: Props) {
 
   const series = [
     {
-      name: "Revenue",
+      name: "Revenues",
       type: "line",
       stack: "RevenueTotal",
       smooth: true,
@@ -72,7 +72,7 @@ export default function Chart({ saves }: Props) {
       data: revenueValues,
     },
     {
-      name: "Expense",
+      name: "Expenses",
       type: "line",
       stack: "ExpenseTotal",
       smooth: true,
@@ -101,6 +101,10 @@ export default function Chart({ saves }: Props) {
   ];
 
   const option: EChartsProps["option"] = {
+    darkMode: true,
+    textStyle: {
+      color: "#fff",
+    },
     color: ["#80FFA5", "#FF0087"],
     tooltip: {
       trigger: "axis",
@@ -113,6 +117,9 @@ export default function Chart({ saves }: Props) {
     },
     legend: {
       data: legendData,
+      textStyle: {
+        color: "#fff",
+      },
     },
     grid: {
       left: "5px",

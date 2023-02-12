@@ -57,14 +57,20 @@ const Page: NextPage = () => {
     const asyncWrapper = async () => {
       const saves = await Promise.all(
         savesQuery.data.map(async (save) => {
+          const decryptedEntries = await decrypt<Entry[]>(
+            save.entries,
+            encryptionKey
+          );
+          const entries = decryptedEntries.map((decryptedEntry) => {
+            return {
+              ...decryptedEntry,
+              value: parseFloat(decryptedEntry.value),
+            };
+          });
+
           return {
             date: save.date,
-            entries: (await decrypt(save.entries, encryptionKey)).map(
-              (entry) => ({
-                ...entry,
-                value: parseFloat(entry.value),
-              })
-            ),
+            entries,
           };
         })
       );
