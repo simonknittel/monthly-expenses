@@ -1,6 +1,8 @@
-import { GetServerSideProps, type NextPage } from "next";
+import type { GetServerSideProps } from "next";
+import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import EncryptionKey from "../components/EncryptionKey";
 import Logout from "../components/Logout";
 import { useEncryptionKey } from "../contexts/EncryptionKey";
@@ -27,15 +29,19 @@ const Page: NextPage = () => {
   const router = useRouter();
   const { encryptionKey } = useEncryptionKey();
 
-  if (encryptionKey) {
+  useEffect(() => {
+    if (!encryptionKey) return;
     router.push("/overview");
+  }, [encryptionKey]);
+
+  if (encryptionKey) {
     return null;
   }
 
   return (
     <>
       <Head>
-        <title>Overview - Monthly Expenses</title>
+        <title>Encryption Key - Monthly Expenses</title>
         <meta name="description" content="" />
       </Head>
 

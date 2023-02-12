@@ -135,9 +135,5 @@ export default function Chart({ saves }: Props) {
     series,
   };
 
-  return (
-    <section className="min-w-[480px] grow rounded bg-slate-800 p-8 text-slate-50">
-      <ECharts option={option} />
-    </section>
-  );
+  return <ECharts option={option} />;
 }

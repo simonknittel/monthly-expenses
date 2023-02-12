@@ -1,13 +1,16 @@
-import { GetServerSideProps, type NextPage } from "next";
+import type { GetServerSideProps } from "next";
+import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Chart from "../components/Chart";
+import ChartContainer from "../components/ChartContainer";
 import Form from "../components/Form";
+import FormSkeleton from "../components/FormSkeleton";
 import Logout from "../components/Logout";
 import { useEncryptionKey } from "../contexts/EncryptionKey";
 import { getServerAuthSession } from "../server/auth";
-import { Entry } from "../types";
+import type { Entry } from "../types";
 import { api } from "../utils/api";
 import { decrypt } from "../utils/encryption";
 
@@ -45,7 +48,7 @@ const Page: NextPage = () => {
 
   useEffect(() => {
     if (!encryptionKey) {
-      router.push("/setup");
+      router.push("/key");
       return;
     }
 
@@ -84,14 +87,7 @@ const Page: NextPage = () => {
 
         <div className="w-full overflow-x-auto">
           <div className="flex w-full gap-4">
-            {!saves ||
-              (!encryptionKey && (
-                <div className="flex w-[480px] shrink-0 flex-col gap-4 rounded bg-slate-800 p-8">
-                  <p className="text-slate-400">
-                    Loading and decrypting your data ...
-                  </p>
-                </div>
-              ))}
+            {(!saves || !encryptionKey) && <FormSkeleton />}
 
             {saves && encryptionKey && (
               <Form
@@ -103,24 +99,23 @@ const Page: NextPage = () => {
               />
             )}
 
-            {!saves ||
-              (!encryptionKey && (
-                <section className="min-w-[480px] grow rounded bg-slate-800 p-8">
-                  <p className="text-slate-400">
-                    Loading and decrypting your data ...
-                  </p>
-                </section>
-              ))}
+            <ChartContainer>
+              {(!saves || !encryptionKey) && (
+                <p className="text-slate-400">
+                  Loading and decrypting your data ...
+                </p>
+              )}
 
-            {saves && saves.length <= 1 && encryptionKey && (
-              <section className="min-w-[480px] grow rounded bg-slate-800 p-8">
+              {saves && saves.length <= 1 && encryptionKey && (
                 <p className="text-slate-400">
                   You need at least two data points for the visualization.
                 </p>
-              </section>
-            )}
+              )}
 
-            {saves && saves.length > 1 && <Chart saves={saves} />}
+              {saves && saves.length > 1 && encryptionKey && (
+                <Chart saves={saves} />
+              )}
+            </ChartContainer>
           </div>
         </div>
       </main>

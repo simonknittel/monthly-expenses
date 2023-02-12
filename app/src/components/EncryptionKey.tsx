@@ -64,12 +64,12 @@ export default function EncryptionKey() {
 
         <p className="ml-5 text-sm text-slate-500">
           Stores the encryption key in your browser&apos;s LocalStorage. This
-          way you won't have to enter you key everytime you visit this app.
+          way you won&apos;t have to enter you key everytime you visit this app.
         </p>
       </div>
 
       <div className="flex flex-row-reverse gap-2">
-        <Button type="submit">Login</Button>
+        <Button type="submit">Set</Button>
       </div>
     </form>
   );

@@ -1,4 +1,5 @@
-import { GetServerSideProps, type NextPage } from "next";
+import type { GetServerSideProps } from "next";
+import { type NextPage } from "next";
 import Head from "next/head";
 import Login from "../components/Login";
 import { getServerAuthSession } from "../server/auth";
@@ -9,7 +10,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (session) {
     return {
       redirect: {
-        destination: "/setup",
+        destination: "/key",
         permanent: false,
       },
     };

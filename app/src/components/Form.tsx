@@ -21,7 +21,7 @@ export default function Form({ encryptionKey, latestEntries }: Props) {
   const utils = api.useContext();
   const mutation = api.saves.store.useMutation({});
 
-  const interval = useRef<ReturnType<typeof setInterval>>(null);
+  const interval = useRef<ReturnType<typeof setInterval> | null>(null);
   const [currentDateAndTime, setCurrentDateAndTime] = useState(true);
 
   const now = new Date();
@@ -71,7 +71,7 @@ export default function Form({ encryptionKey, latestEntries }: Props) {
     return () => {
       if (interval.current) clearInterval(interval.current);
     };
-  }, [currentDateAndTime]);
+  }, [currentDateAndTime, setValue]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const encryptedDataString = await encrypt(
@@ -84,9 +84,9 @@ export default function Form({ encryptionKey, latestEntries }: Props) {
       entries: encryptedDataString,
     });
 
-    utils.saves.get.invalidate();
-
     toast.success("Saved new entry");
+
+    await utils.saves.get.invalidate();
   };
 
   return (
