@@ -85,38 +85,36 @@ const Page: NextPage = () => {
       <main className="flex flex-col items-start gap-4">
         <Logout />
 
-        <div className="w-full overflow-x-auto">
-          <div className="flex w-full gap-4">
-            {(!saves || !encryptionKey) && <FormSkeleton />}
+        <div className="grid w-full grid-rows-overview gap-4 lg:grid-cols-overview">
+          {(!saves || !encryptionKey) && <FormSkeleton />}
 
-            {saves && encryptionKey && (
-              <Form
-                encryptionKey={encryptionKey}
-                latestEntries={
-                  saves.sort((a, b) => b.date.getTime() - a.date.getTime())[0]
-                    ?.entries || []
-                }
-              />
+          {saves && encryptionKey && (
+            <Form
+              encryptionKey={encryptionKey}
+              latestEntries={
+                saves.sort((a, b) => b.date.getTime() - a.date.getTime())[0]
+                  ?.entries || []
+              }
+            />
+          )}
+
+          <ChartContainer>
+            {(!saves || !encryptionKey) && (
+              <p className="text-slate-400">
+                Loading and decrypting your data ...
+              </p>
             )}
 
-            <ChartContainer>
-              {(!saves || !encryptionKey) && (
-                <p className="text-slate-400">
-                  Loading and decrypting your data ...
-                </p>
-              )}
+            {saves && saves.length <= 1 && encryptionKey && (
+              <p className="text-slate-400">
+                You need at least two data points for the visualization.
+              </p>
+            )}
 
-              {saves && saves.length <= 1 && encryptionKey && (
-                <p className="text-slate-400">
-                  You need at least two data points for the visualization.
-                </p>
-              )}
-
-              {saves && saves.length > 1 && encryptionKey && (
-                <Chart saves={saves} />
-              )}
-            </ChartContainer>
-          </div>
+            {saves && saves.length > 1 && encryptionKey && (
+              <Chart saves={saves} />
+            )}
+          </ChartContainer>
         </div>
       </main>
     </>

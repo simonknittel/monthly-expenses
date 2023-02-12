@@ -2,7 +2,14 @@
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      gridTemplateColumns: {
+        'overview': '480px auto'
+      },
+      gridTemplateRows: {
+        'overview': 'min-content min-content'
+      }
+    },
   },
   plugins: [],
 };
