@@ -3,11 +3,12 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Button from "../components/Button";
 import Chart from "../components/Chart";
-import ChartContainer from "../components/ChartContainer";
 import Form from "../components/Form";
-import FormSkeleton from "../components/FormSkeleton";
 import Logout from "../components/Logout";
+import Modal from "../components/Modal";
+import Table from "../components/Table";
 import { useEncryptionKey } from "../contexts/EncryptionKey";
 import { getServerAuthSession } from "../server/auth";
 import type { Entry } from "../types";
@@ -32,27 +33,23 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 const Page: NextPage = () => {
-  const router = useRouter();
   const { encryptionKey } = useEncryptionKey();
   const [saves, setSaves] = useState<
     | {
+        id: string;
         date: Date;
         entries: Entry[];
       }[]
     | null
   >(null);
+  const [showNewModal, setShowNewModal] = useState(false);
 
-  const savesQuery = api.saves.get.useQuery(null, {
+  const savesQuery = api.saves.getAll.useQuery(null, {
     enabled: Boolean(encryptionKey),
   });
 
   useEffect(() => {
-    if (!encryptionKey) {
-      router.push("/key");
-      return;
-    }
-
-    if (!savesQuery.data) return;
+    if (!encryptionKey || !savesQuery.data) return;
 
     const asyncWrapper = async () => {
       const saves = await Promise.all(
@@ -69,6 +66,7 @@ const Page: NextPage = () => {
           });
 
           return {
+            id: save.id,
             date: save.date,
             entries,
           };
@@ -88,41 +86,58 @@ const Page: NextPage = () => {
         <meta name="description" content="" />
       </Head>
 
-      <main className="flex flex-col items-start gap-4">
-        <Logout />
+      <main className="flex flex-col gap-4">
+        <div className="flex justify-between">
+          <Logout />
+          <Button onClick={() => setShowNewModal(true)}>Add new entry</Button>
+        </div>
 
-        <div className="grid w-full grid-rows-overview gap-4 lg:grid-cols-overview">
-          {(!saves || !encryptionKey) && <FormSkeleton />}
-
-          {saves && encryptionKey && (
-            <Form
-              encryptionKey={encryptionKey}
-              latestEntries={
-                saves.sort((a, b) => b.date.getTime() - a.date.getTime())[0]
-                  ?.entries || []
-              }
-            />
+        <section className="h-[480px] rounded bg-slate-800 p-8 text-slate-50">
+          {(!saves || !encryptionKey) && (
+            <p className="text-slate-400">
+              Loading and decrypting your data ...
+            </p>
           )}
 
-          <ChartContainer>
-            {(!saves || !encryptionKey) && (
-              <p className="text-slate-400">
-                Loading and decrypting your data ...
-              </p>
-            )}
+          {saves && saves.length <= 1 && encryptionKey && (
+            <p className="text-slate-400">
+              You need at least two data points for the visualization.
+            </p>
+          )}
 
-            {saves && saves.length <= 1 && encryptionKey && (
-              <p className="text-slate-400">
-                You need at least two data points for the visualization.
-              </p>
-            )}
+          {saves && saves.length > 1 && encryptionKey && (
+            <Chart saves={saves} />
+          )}
+        </section>
 
-            {saves && saves.length > 1 && encryptionKey && (
-              <Chart saves={saves} />
-            )}
-          </ChartContainer>
-        </div>
+        <section className="overflow-x-auto rounded bg-slate-800 p-8 text-slate-50">
+          {(!saves || !encryptionKey) && (
+            <p className="text-slate-400">
+              Loading and decrypting your data ...
+            </p>
+          )}
+
+          {saves && encryptionKey && <Table saves={saves} />}
+        </section>
       </main>
+
+      <Modal
+        isOpen={showNewModal}
+        onRequestClose={() => setShowNewModal(false)}
+        className="w-[480px]"
+      >
+        <h2 className="font-bold">Add new entry</h2>
+
+        <p className="mb-4 text-slate-400">
+          The form is prefilled with the data of your last entry.
+        </p>
+
+        <Form
+          saveId={
+            saves?.sort((a, b) => b.date.getTime() - a.date.getTime())[0]?.id
+          }
+        />
+      </Modal>
     </>
   );
 };

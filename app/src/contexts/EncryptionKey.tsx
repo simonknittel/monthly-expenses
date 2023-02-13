@@ -1,5 +1,7 @@
 import { type ReactNode, useEffect, useState } from "react";
 import { createContext, useContext, useMemo } from "react";
+import EncryptionKeyForm from "../components/EncryptionKeyForm";
+import Modal from "../components/Modal";
 
 interface EncryptionKeyInterface {
   encryptionKey: string | null;
@@ -47,7 +49,13 @@ export const EncryptionKeyProvider = ({ children }: Props) => {
   );
 
   return (
-    <EncryptionKey.Provider value={value}>{children}</EncryptionKey.Provider>
+    <EncryptionKey.Provider value={value}>
+      {children}
+
+      <Modal isOpen={!encryptionKey} className="w-[480px]">
+        <EncryptionKeyForm />
+      </Modal>
+    </EncryptionKey.Provider>
   );
 };
 

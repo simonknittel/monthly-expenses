@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
@@ -15,20 +15,22 @@ export default function Layout({ children }: Props) {
       </Head>
 
       <div className="min-h-screen bg-slate-700 p-4">
-        {children}
+        <div className="mx-auto max-w-screen-xl">
+          {children}
 
-        <footer className="flex w-full justify-center gap-2 p-4 text-slate-500">
-          <p>Monthly Expenses</p>
+          <footer className="flex w-full justify-center gap-2 p-4 text-slate-500">
+            <p>Monthly Expenses</p>
 
-          <span>&bull;</span>
+            <span>&bull;</span>
 
-          <a
-            href="https://github.com/simonknittel/monthly-expenses"
-            className="text-slate-400 underline underline-offset-4 hover:text-slate-300"
-          >
-            GitHub
-          </a>
-        </footer>
+            <a
+              href="https://github.com/simonknittel/monthly-expenses"
+              className="text-slate-400 underline underline-offset-4 hover:text-slate-300"
+            >
+              GitHub
+            </a>
+          </footer>
+        </div>
       </div>
     </>
   );

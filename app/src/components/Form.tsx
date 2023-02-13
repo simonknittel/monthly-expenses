@@ -1,39 +1,83 @@
-import { useEffect, useRef, useState } from "react";
+import type { Save } from "@prisma/client";
+import { useEffect } from "react";
 import { type SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { useEncryptionKey } from "../contexts/EncryptionKey";
+import useDateInput from "../hooks/useDateInput";
 import type { Entry } from "../types";
 import { api } from "../utils/api";
-import { encrypt } from "../utils/encryption";
+import { decrypt, encrypt } from "../utils/encryption";
 import Button from "./Button";
 
 interface Props {
-  encryptionKey: string;
-  latestEntries: Entry[];
+  editingExisting?: boolean | null;
+  saveId?: Save["id"] | null;
 }
 
-interface FormValues {
+export interface FormValues {
   date: string;
   revenues: Entry[];
   expenses: Entry[];
 }
 
-export default function Form({ encryptionKey, latestEntries }: Props) {
+export default function Form({ saveId, editingExisting }: Props) {
+  const { encryptionKey } = useEncryptionKey();
   const utils = api.useContext();
-  const mutation = api.saves.store.useMutation({});
-
-  const interval = useRef<ReturnType<typeof setInterval> | null>(null);
-  const [currentDateAndTime, setCurrentDateAndTime] = useState(true);
-
-  const now = new Date();
-  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-
-  const { control, handleSubmit, register, setValue } = useForm<FormValues>({
-    defaultValues: {
-      revenues: latestEntries.filter(({ type }) => type === "revenue"),
-      expenses: latestEntries.filter(({ type }) => type === "expense"),
-      date: now.toISOString().substring(0, 16),
+  const saveQuery = api.saves.get.useQuery(
+    {
+      id: saveId,
     },
-  });
+    {
+      enabled: Boolean(saveId),
+    }
+  );
+  const createMutation = api.saves.create.useMutation();
+  const updateMutation = api.saves.update.useMutation();
+
+  const { control, handleSubmit, register, setValue } = useForm<FormValues>();
+
+  useEffect(() => {
+    if (!encryptionKey || !saveQuery.data) {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+      setValue("date", now.toISOString().substring(0, 16));
+
+      return;
+    }
+
+    const asyncWrapper = async () => {
+      setValue("date", saveQuery.data.date.toISOString().substring(0, 16));
+
+      const decryptedEntries = await decrypt<Entry[]>(
+        saveQuery.data.entries,
+        encryptionKey
+      );
+      const entries = decryptedEntries.map((decryptedEntry) => {
+        return {
+          ...decryptedEntry,
+          value: parseFloat(decryptedEntry.value),
+        };
+      });
+
+      setValue(
+        "revenues",
+        entries.filter(({ type }) => type === "revenue") || []
+      );
+
+      setValue(
+        "expenses",
+        entries.filter(({ type }) => type === "expense") || []
+      );
+    };
+
+    asyncWrapper();
+  }, [saveId, saveQuery.data, encryptionKey]);
+
+  const { currentDateAndTime, setCurrentDateAndTime } = useDateInput(
+    setValue,
+    editingExisting
+  );
 
   const {
     fields: revenues,
@@ -53,47 +97,37 @@ export default function Form({ encryptionKey, latestEntries }: Props) {
     name: "expenses",
   });
 
-  useEffect(() => {
-    if (interval.current) clearInterval(interval.current);
-
-    if (!currentDateAndTime) return;
-
-    const now = new Date();
-    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-    setValue("date", now.toISOString().substring(0, 16));
-
-    interval.current = setInterval(() => {
-      const now = new Date();
-      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-      setValue("date", now.toISOString().substring(0, 16));
-    }, 1000);
-
-    return () => {
-      if (interval.current) clearInterval(interval.current);
-    };
-  }, [currentDateAndTime, setValue]);
-
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    if (!encryptionKey) return;
+
     const encryptedDataString = await encrypt(
       [...data.revenues, ...data.expenses],
       encryptionKey
     );
 
-    await mutation.mutateAsync({
-      date: new Date(data.date),
-      entries: encryptedDataString,
-    });
+    if (editingExisting && saveId) {
+      await updateMutation.mutateAsync({
+        id: saveId,
+        date: new Date(data.date),
+        entries: encryptedDataString,
+      });
 
-    toast.success("Saved new entry");
+      toast.success("Entry updated");
+    } else {
+      await createMutation.mutateAsync({
+        date: new Date(data.date),
+        entries: encryptedDataString,
+      });
 
+      toast.success("New entry updated");
+    }
+
+    await utils.saves.getAll.invalidate();
     await utils.saves.get.invalidate();
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-4 rounded bg-slate-800 p-8 text-slate-50"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <p className="text-green-300">Revenues</p>
 
@@ -282,9 +316,9 @@ export default function Form({ encryptionKey, latestEntries }: Props) {
 
       <div className="flex flex-row-reverse gap-2">
         <Button type="submit">Save</Button>
-        <Button type="reset" variant="secondary">
+        {/* <Button type="reset" variant="secondary">
           Reset
-        </Button>
+        </Button> */}
       </div>
     </form>
   );

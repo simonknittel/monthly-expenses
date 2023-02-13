@@ -9,8 +9,12 @@ interface FormValues {
   rememberMe: boolean;
 }
 
-export default function EncryptionKey() {
-  const { handleSubmit, register, setFocus } = useForm<FormValues>();
+export default function EncryptionKeyForm() {
+  const { handleSubmit, register, setFocus } = useForm<FormValues>({
+    defaultValues: {
+      rememberMe: true,
+    },
+  });
   const { set } = useEncryptionKey();
 
   useEffect(() => {
@@ -24,7 +28,7 @@ export default function EncryptionKey() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex w-full max-w-md flex-col gap-4 rounded bg-slate-800 p-8  text-slate-50"
+      className="flex w-full max-w-md flex-col gap-4"
     >
       <div className="flex flex-col gap-1">
         <div className="flex flex-col gap-1">

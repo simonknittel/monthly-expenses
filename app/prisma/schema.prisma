@@ -60,10 +60,9 @@ model VerificationToken {
 
 // Custom models
 model Save {
+    id      String   @id @default(cuid())
     userId  String
     user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     date    DateTime
     entries String   @db.MediumText
-
-    @@id([userId, date])
 }

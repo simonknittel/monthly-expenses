@@ -18,6 +18,9 @@ The project was setup with the so called [T3 stack](https://create.t3.gg/)
 - [PlanetScale](https://planetscale.com/)
 - [Vercel](https://vercel.com/)
 - [NextAuth.js](https://next-auth.js.org/)
+- [React Table](https://github.com/TanStack/table)
+- [react-hot-toast](https://github.com/timolins/react-hot-toast)
+- [react-modal](https://github.com/reactjs/react-modal)
 
 ## Usage
 
