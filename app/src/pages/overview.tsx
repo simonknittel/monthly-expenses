@@ -3,6 +3,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { FaPlus } from "react-icons/fa";
 import Button from "../components/Button";
 import Chart from "../components/Chart";
 import Form from "../components/Form";
@@ -89,7 +90,9 @@ const Page: NextPage = () => {
       <main className="flex flex-col gap-4">
         <div className="flex justify-between">
           <Logout />
-          <Button onClick={() => setShowNewModal(true)}>Add new entry</Button>
+          <Button onClick={() => setShowNewModal(true)}>
+            Add new entry <FaPlus />
+          </Button>
         </div>
 
         <section className="h-[480px] rounded bg-slate-800 p-8 text-slate-50">
@@ -100,7 +103,7 @@ const Page: NextPage = () => {
           )}
 
           {saves && saves.length <= 1 && encryptionKey && (
-            <p className="text-slate-400">
+            <p className="text-center font-bold text-slate-400">
               You need at least two data points for the visualization.
             </p>
           )}
@@ -136,6 +139,7 @@ const Page: NextPage = () => {
           saveId={
             saves?.sort((a, b) => b.date.getTime() - a.date.getTime())[0]?.id
           }
+          onCreated={() => setShowNewModal(false)}
         />
       </Modal>
     </>

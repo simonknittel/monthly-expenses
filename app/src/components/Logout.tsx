@@ -1,4 +1,5 @@
 import { signOut } from "next-auth/react";
+import { FaChevronLeft } from "react-icons/fa";
 import { useEncryptionKey } from "../contexts/EncryptionKey";
 import Button from "./Button";
 
@@ -12,7 +13,7 @@ export default function Logout() {
 
   return (
     <Button variant="secondary" onClick={clickHandler}>
-      &lt; Logout
+      <FaChevronLeft /> Logout
     </Button>
   );
 }

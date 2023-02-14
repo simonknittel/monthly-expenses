@@ -2,6 +2,7 @@ import type { Save } from "@prisma/client";
 import { useEffect } from "react";
 import { type SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { FaRegTrashAlt } from "react-icons/fa";
 import { useEncryptionKey } from "../contexts/EncryptionKey";
 import useDateInput from "../hooks/useDateInput";
 import type { Entry } from "../types";
@@ -12,6 +13,8 @@ import Button from "./Button";
 interface Props {
   editingExisting?: boolean | null;
   saveId?: Save["id"] | null;
+  onCreated?: () => void;
+  onUpdated?: () => void;
 }
 
 export interface FormValues {
@@ -20,7 +23,12 @@ export interface FormValues {
   expenses: Entry[];
 }
 
-export default function Form({ saveId, editingExisting }: Props) {
+export default function Form({
+  saveId,
+  editingExisting,
+  onCreated,
+  onUpdated,
+}: Props) {
   const { encryptionKey } = useEncryptionKey();
   const utils = api.useContext();
   const saveQuery = api.saves.get.useQuery(
@@ -113,6 +121,8 @@ export default function Form({ saveId, editingExisting }: Props) {
       });
 
       toast.success("Entry updated");
+
+      onUpdated?.();
     } else {
       await createMutation.mutateAsync({
         date: new Date(data.date),
@@ -120,6 +130,8 @@ export default function Form({ saveId, editingExisting }: Props) {
       });
 
       toast.success("New entry updated");
+
+      onCreated?.();
     }
 
     await utils.saves.getAll.invalidate();
@@ -178,19 +190,19 @@ export default function Form({ saveId, editingExisting }: Props) {
               />
             </div>
 
-            <button
-              className="basis-10 rounded border border-slate-700 p-2 text-xs uppercase hover:bg-slate-700"
-              type="button"
+            <Button
               onClick={() => removeRevenue(index)}
               title="Remove entry"
+              variant="secondary"
+              iconOnly={true}
             >
-              x
-            </button>
+              <FaRegTrashAlt />
+            </Button>
           </div>
         ))}
 
-        <button
-          className="rounded p-2 text-xs uppercase hover:bg-slate-700"
+        <Button
+          variant="tertiary"
           onClick={() =>
             appendRevenue({
               type: "revenue",
@@ -202,7 +214,7 @@ export default function Form({ saveId, editingExisting }: Props) {
           }
         >
           Add new entry +
-        </button>
+        </Button>
       </div>
 
       <div className="flex flex-col gap-1">
@@ -255,19 +267,19 @@ export default function Form({ saveId, editingExisting }: Props) {
               />
             </div>
 
-            <button
-              className="basis-10 rounded border border-slate-700 p-2 text-xs uppercase hover:bg-slate-700"
-              type="button"
+            <Button
               onClick={() => removeExpense(index)}
               title="Remove entry"
+              variant="secondary"
+              iconOnly={true}
             >
-              x
-            </button>
+              <FaRegTrashAlt />
+            </Button>
           </div>
         ))}
 
-        <button
-          className="rounded p-2 text-xs uppercase hover:bg-slate-700"
+        <Button
+          variant="tertiary"
           onClick={() =>
             appendExpense({
               type: "expense",
@@ -279,7 +291,7 @@ export default function Form({ saveId, editingExisting }: Props) {
           }
         >
           Add new entry +
-        </button>
+        </Button>
       </div>
 
       <div className="flex flex-col gap-1">

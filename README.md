@@ -6,6 +6,8 @@ All data except for the username and dates will be encrypted with your encryptio
 
 Demo: <https://monthly-expenses.vercel.app/>
 
+![](docs/monthly-expenses.png)
+
 ## Technologies
 
 The project was setup with the so called [T3 stack](https://create.t3.gg/)
@@ -20,6 +22,8 @@ The project was setup with the so called [T3 stack](https://create.t3.gg/)
 - [NextAuth.js](https://next-auth.js.org/)
 - [React Table](https://github.com/TanStack/table)
 - [react-hot-toast](https://github.com/timolins/react-hot-toast)
+- [React Icons](https://github.com/react-icons/react-icons)
+- [Apache ECharts](https://echarts.apache.org/)
 
 ## Usage
 

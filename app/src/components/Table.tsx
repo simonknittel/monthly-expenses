@@ -8,6 +8,7 @@ import { api } from "../utils/api";
 import Button from "./Button";
 import Form from "./Form";
 import Modal from "./Modal";
+import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 
 interface Props {
   saves: { id: string; date: Date; entries: Entry[] }[];
@@ -69,14 +70,39 @@ export default function Table({ saves }: Props) {
               expenses: number;
             };
           };
-        }) => (
-          <div className="flex justify-end gap-2">
-            <Button onClick={() => editHandler(row.original.id)}>Edit</Button>
-            <Button onClick={() => deleteHandler(row.original.id)}>
-              Delete
-            </Button>
-          </div>
-        ),
+        }) => {
+          const timeFormat = new Intl.DateTimeFormat("de-DE", {
+            dateStyle: "short",
+            timeStyle: "short",
+          });
+
+          return (
+            <div className="flex justify-end gap-2">
+              <Button
+                onClick={() => editHandler(row.original.id)}
+                variant="secondary"
+                title="Edit"
+                aria-label={`Edit the entry from ${timeFormat.format(
+                  row.original.date
+                )}`}
+                iconOnly={true}
+              >
+                <FaRegEdit />
+              </Button>
+              <Button
+                onClick={() => deleteHandler(row.original.id)}
+                variant="secondary"
+                title="Delete"
+                aria-label={`Delete the entry from ${timeFormat.format(
+                  row.original.date
+                )}`}
+                iconOnly={true}
+              >
+                <FaRegTrashAlt />
+              </Button>
+            </div>
+          );
+        },
       },
     ],
     []
@@ -114,7 +140,7 @@ export default function Table({ saves }: Props) {
             // eslint-disable-next-line react/jsx-key
             <tr
               {...headerGroup.getHeaderGroupProps()}
-              className="grid grid-cols-[1fr_1fr_1fr_14rem] items-center gap-4"
+              className="grid grid-cols-[1fr_1fr_1fr_8rem] items-center gap-4"
             >
               {headerGroup.headers.map((column) => (
                 // eslint-disable-next-line react/jsx-key
@@ -137,7 +163,7 @@ export default function Table({ saves }: Props) {
               // eslint-disable-next-line react/jsx-key
               <tr
                 {...row.getRowProps()}
-                className="grid grid-cols-[1fr_1fr_1fr_14rem] items-center gap-4"
+                className="grid grid-cols-[1fr_1fr_1fr_8rem] items-center gap-4"
               >
                 {row.cells.map((cell) => (
                   // eslint-disable-next-line react/jsx-key
@@ -157,7 +183,7 @@ export default function Table({ saves }: Props) {
       </table>
 
       {saves.length === 0 && (
-        <p className="text-slate-400">
+        <p className="mt-6 text-center font-bold text-slate-400">
           You don&apos;t have any saved entries yet.
         </p>
       )}
@@ -169,7 +195,11 @@ export default function Table({ saves }: Props) {
       >
         <h2 className="mb-4 font-bold">Edit entry</h2>
 
-        <Form saveId={modalSaveId} editingExisting={true} />
+        <Form
+          saveId={modalSaveId}
+          editingExisting={true}
+          onUpdated={() => setModalIsOpen(false)}
+        />
       </Modal>
     </>
   );
