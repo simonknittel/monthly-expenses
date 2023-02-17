@@ -10,7 +10,7 @@ Demo: <https://monthly-expenses.vercel.app/>
 
 ## Technologies
 
-The project was setup with the so called [T3 stack](https://create.t3.gg/)
+The project was set up with the so called [T3 stack](https://create.t3.gg/)
 
 - [Next.js](https://nextjs.org/)
 - [TypeScript](https://www.typescriptlang.org/)
