@@ -6,9 +6,9 @@ import Button from "./Button";
 export default function Logout() {
   const { unset } = useEncryptionKey();
 
-  const clickHandler = () => {
+  const clickHandler = async () => {
     unset();
-    signOut();
+    await signOut();
   };
 
   return (

@@ -1,30 +1,20 @@
 import clsx from "clsx";
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ComponentPropsWithoutRef } from "react";
+import { forwardRef } from "react";
 
-interface Props {
-  onClick?: () => void;
-  type?: ButtonHTMLAttributes<HTMLButtonElement>["type"];
-  children: ReactNode;
+interface Props extends ComponentPropsWithoutRef<"button"> {
   variant?: "primary" | "secondary" | "tertiary" | null;
   iconOnly?: boolean | null;
-  className?: string;
 }
 
-export default function Button(props: Props) {
-  const {
-    onClick,
-    type,
-    children,
-    variant = "primary",
-    iconOnly,
-    className,
-    ...other
-  } = props;
+const Button = forwardRef<HTMLButtonElement, Props>(function Button(
+  props,
+  ref
+) {
+  const { variant = "primary", iconOnly, className, ...other } = props;
 
   return (
     <button
-      onClick={onClick}
-      type={type}
       className={clsx(
         {
           "flex items-center justify-center gap-4 rounded uppercase ": true,
@@ -40,8 +30,9 @@ export default function Button(props: Props) {
         className
       )}
       {...other}
-    >
-      {children}
-    </button>
+      ref={ref}
+    />
   );
-}
+});
+
+export default Button;

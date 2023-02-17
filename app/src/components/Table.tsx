@@ -89,6 +89,7 @@ export default function Table({ saves }: Props) {
               >
                 <FaRegEdit />
               </Button>
+
               <Button
                 onClick={() => deleteHandler(row.original.id)}
                 variant="secondary"
